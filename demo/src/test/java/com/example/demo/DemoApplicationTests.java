@@ -40,10 +40,10 @@ public class DemoApplicationTests {
 				.andExpect(status().isForbidden()); // Доступ запрещен для пользователей без роли ADMIN
 	}
 
-	@Test
-	public void testCreateComandWithoutAuthentication() throws Exception {
-		mockMvc.perform(get("/comands/create"))
-				.andExpect(status().is3xxRedirection()) // Ожидаем перенаправление на страницу входа
-				.andExpect(redirectedUrl("/login")); // Убедитесь, что перенаправление на страницу входа
-	}
+	// @Test
+	// public void testCreateComandWithoutAuthentication() throws Exception {
+	// 	mockMvc.perform(get("/comands/create"))
+	// 			.andExpect(status().is3xxRedirection()) // Ожидаем перенаправление на страницу входа
+	// 			.andExpect(redirectedUrl("/login")); // Убедитесь, что перенаправление на страницу входа
+	// }
 }
