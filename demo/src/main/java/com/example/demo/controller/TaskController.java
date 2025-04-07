@@ -42,6 +42,7 @@ public class TaskController {
         return "redirect:/tasks"; // Перенаправляем
     }
 
+
     @GetMapping("/comand/{comandId}")
     public ResponseEntity<List<Task>> getTasksForComand(@PathVariable Long comandId) {
         List<Task> tasks = taskService.getTasksForComand(comandId);
