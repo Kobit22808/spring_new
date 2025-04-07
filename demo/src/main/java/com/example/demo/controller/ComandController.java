@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ComandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +29,11 @@ public class ComandController {
     public String addMemberToComand(@PathVariable Long comandId, @RequestParam Long userId) {
         comandService.addMemberToComand(comandId, userId);
         return "redirect:/comands/" + comandId; // Перенаправляем на страницу команды
+    }
+    @GetMapping("/comands/create")
+    @PreAuthorize("hasRole('ADMIN')") // Проверка роли
+    public String createComand(Model model) {
+        // Логика для создания команды
+        return "createComand"; // Возвращает имя шаблона для создания команды
     }
 }

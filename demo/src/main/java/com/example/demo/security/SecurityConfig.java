@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Отключение CSRF (для упрощения)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/register", "/error").permitAll() // Разрешить доступ к главной, входу и регистрации
-                        .requestMatchers("/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
+                        .requestMatchers("/comands","/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
