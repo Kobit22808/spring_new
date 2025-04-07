@@ -1,16 +1,23 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Comand;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.UserRoleEntity;
 import com.example.demo.entity.User;
+import com.example.demo.repository.ComandRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.RoleRepository; // Импортируйте репозиторий ролей
 import com.example.demo.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,19 +36,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //    public User addUser (String username, String firstName, String lastName, String patronymic, String email, String password, LocalDate birth, Set<UserRoleEntity> roles) {
-//        User user = new User();
-//        user.setUsername(username);
-//        user.setFirstName(firstName);
-//        user.setLastName(lastName);
-//        user.setPatronymic(patronymic);
-//        user.setEmail(email);
-//        user.setPassword(passwordEncoder.encode(password)); // Хеширование пароля
-//        user.setBirth(birth); // Установка даты рождения
-//        user.setCreatedAt(LocalDate.now()); // Установка даты создания
-//        user.setUserRoles(roles); // Установка ролей
-//        return userRepository.save(user);
-//    }
+    @Autowired
+    private ComandRepository comandRepository;
+
     public User addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Хеширование пароля
         user.setCreatedAt(LocalDate.now()); // Установка даты создания
@@ -72,4 +69,39 @@ public class UserService {
 //            return roleRepository.save(newRole); // Сохраняем новую роль и возвращаем ее
 //        }
     }
+    private String getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
+
+    public User getCurrentUser () {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Проверяем, аутентифицирован ли пользователь
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName(); // Получаем имя пользователя из аутентификации
+            System.out.println("Current username: " + username); // Логируем текущее имя пользователя
+
+            // Ищем пользователя в базе данных по имени
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> {
+                        System.out.println("User  not found for username: " + username); // Логируем, если пользователь не найден
+                        return new RuntimeException("User  not found");
+                    });
+        }
+
+        // Если пользователь не аутентифицирован, возвращаем null
+        return null;
+    }
+
+
+    public List<Comand> getUserComands(User user) {
+        return comandRepository.findByMembers(user); // Предполагается, что у вас есть метод в репозитории
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data
@@ -25,4 +26,8 @@ public class Task {
     private User workman;
 
     private String statusTasks;
+
+    @ManyToOne // Добавляем связь с командой
+    @JoinColumn(name = "comand_id") // Указываем имя колонки в таблице
+    private Comand comand; // Связь с командой
 }

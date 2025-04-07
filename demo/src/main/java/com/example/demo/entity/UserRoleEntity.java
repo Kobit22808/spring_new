@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import com.example.demo.entity.Role; // Убедитесь, что этот импорт есть
+
 @Entity
 @Table(name = "roles")
 public class UserRoleEntity {

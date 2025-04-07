@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Добавить участника в команду</title>
+</head>
+<body>
+<h1>Добавить участника в команду</h1>
+<form th:action="@{/comands/{comandId}/addMember(comandId=${comandId})}" method="post">
+  <label for="userId">Выберите пользователя:</label>
+  <select name="userId" id="userId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+  </select>
+  <button type="submit">Добавить</button>
+</form>
+</body>
+</html>

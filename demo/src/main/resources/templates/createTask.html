@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Создать задачу</title>
+</head>
+<body>
+<h1>Создать задачу</h1>
+<form th:action="@{/tasks/create}" method="post">
+  <label for="title">Название задачи:</label>
+  <input type="text" name="title" id="title" required>
+
+  <label for="text">Описание задачи:</label>
+  <textarea name="text" id="text" required></textarea>
+
+  <label for="comandId">Выберите команду:</label>
+  <select name="comandId" id="comandId">
+    <option th:each="comand : ${comands}" th:value="${comand.id}" th:text="${comand.title}"></option>
+  </select>
+
+  <label for="userId">Выберите исполнителя:</label>
+  <select name="userId" id="userId">
+    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+  </select>
+
+  <button type="submit">Создать задачу</button>
+</form>
+</body>
+</html>

@@ -13,16 +13,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Отключение CSRF (для упрощения)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register").permitAll() // Разрешить доступ к главной, входу и регистрации
+                        .requestMatchers("/", "/login", "/register", "/error").permitAll() // Разрешить доступ к главной, входу и регистрации
+                        .requestMatchers("/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Указать страницу входа
                         .defaultSuccessUrl("/") // Перенаправление после успешного входа
+                        .failureUrl("/login?error=true") // Перенаправление при ошибке входа
                         .permitAll() // Разрешить доступ к странице входа
                 )
                 .logout(logout -> logout
@@ -32,6 +39,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 }

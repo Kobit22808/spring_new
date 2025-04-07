@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
-import com.example.demo.entity.UserRole;
-import com.example.demo.entity.UserRoleEntity;
+import com.example.demo.entity.*;
+import com.example.demo.service.TaskService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -22,15 +21,33 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TaskService taskService; // Сервис для работы с задачами
+
     @GetMapping("/")
-    public String home() {
-        return "home"; // имя файла home.html
+    public String home(Model model) {
+        User currentUser  = userService.getCurrentUser (); // Получаем текущего пользователя
+
+        if (currentUser  != null) {
+            model.addAttribute("username", currentUser .getUsername());
+            List<Comand> userComands = userService.getUserComands(currentUser ); // Получаем команды пользователя
+            model.addAttribute("userComands", userComands);
+
+            // Получаем задачи для текущего пользователя как работодателя или работника
+            List<Task> employerTasks = taskService.getTasksByEmployer(currentUser ); // Задачи, где текущий пользователь - работодатель
+            List<Task> workmanTasks = taskService.getTasksByWorkman(currentUser ); // Задачи, где текущий пользователь - работник
+            model.addAttribute("employerTasks", employerTasks);
+            model.addAttribute("workmanTasks", workmanTasks);
+        } else
+            return "redirect:/login";
+
+        return "home"; // Возвращаем имя шаблона для главной страницы
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login"; // имя файла login.html
-    }
+//    @GetMapping("/login")
+//    public String login() {
+//        return "login"; // имя файла login.html
+//    }
 
     @GetMapping("/register")
     public String register() {
