@@ -17,13 +17,13 @@ public class Task {
     private String textTasks;
     private LocalDate endingTasks;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id")
-    private User employer;
+    private User employer; // Лидер команды, назначающий задачу
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workman_id")
-    private User workman;
+    private User workman; // Работник, которому назначена задача
 
     private String statusTasks;
 

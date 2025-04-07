@@ -100,7 +100,20 @@ public class UserService {
 
 
     public List<Comand> getUserComands(User user) {
-        return comandRepository.findByMembers(user); // Предполагается, что у вас есть метод в репозитории
+        return comandRepository.findByMembers(user.getId()); // Передаем ID пользователя
+    }
+
+    public Comand getComand(Long id) {
+        return comandRepository.findById(id).orElse(null);
+    }
+
+    public void addMemberToComand(Long comandId, Long userId) {
+        Comand comand = getComand(comandId);
+        // Логика добавления участника в команду
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll(); // Возвращает всех пользователей
     }
 
 

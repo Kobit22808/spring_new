@@ -6,6 +6,7 @@ import com.example.demo.entity.User;
 import com.example.demo.entity.UserComandLink;
 import com.example.demo.repository.ComandRepository;
 import com.example.demo.repository.TaskRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,24 +21,27 @@ public class TaskService {
     @Autowired
     private ComandRepository comandRepository;
 
-    public Task createTask(String title, String text, Long comandId, Long userId) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public Task createTask(String title, String text, Long userId, Long comandId) {
+        // Находим работника по его ID
+        User workman = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Работник не найден"));
+
+        // Находим команду по ее ID
         Comand comand = comandRepository.findById(comandId)
-                .orElseThrow(() -> new RuntimeException("Comand not found"));
+                .orElseThrow(() -> new RuntimeException("Команда не найдена"));
 
-        // Проверяем, является ли пользователь членом команды
-        User workman = comand.getUserComandLinks().stream()
-                .map(UserComandLink::getUser )
-                .filter(user -> user.getId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User  is not a member of the comand"));
-
+        // Создаем новую задачу
         Task task = new Task();
         task.setTitleTasks(title);
         task.setTextTasks(text);
-        task.setEmployer(comand.getLeader()); // Лидер команды назначает задачу
-        task.setWorkman(workman); // Назначаем задачу участнику команды
-        task.setStatusTasks("Pending"); // Устанавливаем статус задачи
+        task.setEmployer(comand.getLeader()); // Устанавливаем лидера из команды
+        task.setWorkman(workman); // Назначаем задачу работнику
+        task.setStatusTasks("Ожидание"); // Устанавливаем статус задачи
 
+        // Сохраняем задачу в базе данных
         return taskRepository.save(task);
     }
 
@@ -51,5 +55,13 @@ public class TaskService {
     }
     public List<Task> getTasksByWorkman(User workman) {
         return taskRepository.findByWorkman(workman); // Получаем задачи работника
+    }
+
+    public List<Task> getTasks() {
+        return taskRepository.findAll(); // Возвращает все задачи
+    }
+
+    public void addTaskToComand(Long comandId, String taskTitle) {
+        // Логика добавления задачи в команду
     }
 }

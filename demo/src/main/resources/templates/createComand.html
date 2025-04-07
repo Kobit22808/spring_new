@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Создание команды</title>
 </head>
 <body>
-<h1>Привет</h1>
+<h1>Создание команды</h1>
+<form th:action="@{/comands/create}" method="post">
+    <label for="title">Название команды:</label>
+    <input type="text" id="title" name="title" required>
+    <br>
+    <label for="description">Описание команды:</label>
+    <textarea id="description" name="description" required></textarea>
+    <br>
+    <label for="leaderId">ID лидера команды:</label>
+    <input type="number" id="leaderId" name="leaderId" required>
+    <br>
+    <input type="submit" value="Создать команду">
+</form>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import com.example.demo.dto.TaskDto;
 import com.example.demo.entity.Task;
 import com.example.demo.repository.ComandRepository;
 import com.example.demo.repository.UserRepository;
@@ -9,14 +9,12 @@ import com.example.demo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
@@ -36,14 +34,27 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String createTask(@RequestParam String title, @RequestParam String text, @RequestParam Long comandId, @RequestParam Long userId) {
-        taskService.createTask(title, text, comandId, userId);
-        return "redirect:/tasks"; // Перенаправляе
+    public String createTask(@RequestParam String title,
+                             @RequestParam String text,
+                             @RequestParam Long userId,
+                             @RequestParam Long comandId) {
+        taskService.createTask(title, text, userId, comandId); // Передаем comandId
+        return "redirect:/tasks"; // Перенаправляем
     }
 
     @GetMapping("/comand/{comandId}")
     public ResponseEntity<List<Task>> getTasksForComand(@PathVariable Long comandId) {
         List<Task> tasks = taskService.getTasksForComand(comandId);
         return ResponseEntity.ok(tasks);
+    }
+
+    @PostMapping("/{id}/addTask")
+    public String addTaskToComand(@PathVariable Long id,
+                                  @RequestParam String taskTitle,
+                                  @RequestParam String taskText,
+                                  @RequestParam Long userId) {
+        // Передаем id команды (id) в метод createTask
+        taskService.createTask(taskTitle, taskText, userId, id); // Теперь передаем id команды
+        return "redirect:/comands/" + id; // Перенаправляем на страницу команды
     }
 }

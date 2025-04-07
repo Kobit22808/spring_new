@@ -9,6 +9,7 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,16 @@ public class ComandService {
 
     @Autowired
     private UserComandLinkRepository userComandLinkRepository;
+
+    public List<Comand> getComands() {
+        return comandRepository.findAll();
+    }
+
+    public Comand getComand(Long id) {
+        return comandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Команда не найдена")); // Обработка случая, когда команда не найдена
+    }
+
 
     public Comand createComand(String title, String description, Long leaderId) {
         User leader = userRepository.findById(leaderId)
@@ -54,5 +65,9 @@ public class ComandService {
 
         // Сохраняем связь между пользователем и командой
         userComandLinkRepository.save(link);
+    }
+
+    public List<User> getUsersInComand(Long comandId) {
+        return comandRepository.findUsersByComandId(comandId);
     }
 }

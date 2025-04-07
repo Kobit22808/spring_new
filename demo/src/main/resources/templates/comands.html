@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список команд</title>
+</head>
+<body>
+<h1>Список команд</h1>
+<ul th:each="comand : ${comands}">
+    <a th:href="@{/comands/{id}(id=${comand.id})}">[[${comand.title}]]</a>
+</ul>
+</body>
+</html>

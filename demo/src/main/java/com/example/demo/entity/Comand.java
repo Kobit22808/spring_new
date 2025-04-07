@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Data
 @Entity
@@ -32,4 +34,17 @@ public class Comand {
 
     @OneToMany(mappedBy = "comand") // Связь с UserComandLink
     private Set<UserComandLink> userComandLinks = new HashSet<>(); // Связь с UserComandLink
+
+    @OneToMany(mappedBy = "comand", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // Измените на EAGER
+    private Set<Task> tasks = new HashSet<>(); // Инициализация коллекции
+
+    // Другие поля, геттеры и сеттеры...
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
 }
