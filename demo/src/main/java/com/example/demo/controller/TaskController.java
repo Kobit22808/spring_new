@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.TaskStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import com.example.demo.entity.Task;
@@ -57,5 +58,12 @@ public class TaskController {
         // Передаем id команды (id) в метод createTask
         taskService.createTask(taskTitle, taskText, userId, id); // Теперь передаем id команды
         return "redirect:/comands/" + id; // Перенаправляем на страницу команды
+    }
+    @PostMapping("/{id}/updateStatus")
+    public String updateTaskStatus(@PathVariable Long id, @RequestParam String newStatus) {
+        // Преобразуем строку в соответствующее значение перечисления
+        TaskStatus status = TaskStatus.valueOf(newStatus.toUpperCase()); // Преобразуем строку в верхний регистр
+        taskService.updateTaskStatus(id, status);
+        return "redirect:/tasks"; // Перенаправляем на страницу задач
     }
 }

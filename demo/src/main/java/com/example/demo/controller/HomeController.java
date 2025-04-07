@@ -40,8 +40,8 @@ public class HomeController {
             model.addAttribute("workmanTasks", workmanTasks);
             System.out.println("Employer Tasks: " + employerTasks);
             System.out.println("Workman Tasks: " + workmanTasks);
-        } else
-            return "redirect:/login";
+        }
+
 
         return "home"; // Возвращаем имя шаблона для главной страницы
     }

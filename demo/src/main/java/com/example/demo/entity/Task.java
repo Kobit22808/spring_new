@@ -25,9 +25,15 @@ public class Task {
     @JoinColumn(name = "workman_id")
     private User workman; // Работник, которому назначена задача
 
-    private String statusTasks;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus statusTasks;
 
     @ManyToOne // Добавляем связь с командой
     @JoinColumn(name = "comand_id") // Указываем имя колонки в таблице
     private Comand comand; // Связь с командой
+
+    public void setStatus(TaskStatus newStatus) {
+        this.statusTasks = newStatus;
+    }
+
 }

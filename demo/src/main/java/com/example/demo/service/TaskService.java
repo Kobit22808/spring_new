@@ -1,15 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Comand;
-import com.example.demo.entity.Task;
-import com.example.demo.entity.User;
-import com.example.demo.entity.UserComandLink;
+import com.example.demo.entity.*;
 import com.example.demo.repository.ComandRepository;
+import com.example.demo.repository.NotificationRepository;
 import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +22,9 @@ public class TaskService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public Task createTask(String title, String text, Long userId, Long comandId) {
         // Находим работника по его ID
@@ -39,10 +41,20 @@ public class TaskService {
         task.setTextTasks(text);
         task.setEmployer(comand.getLeader()); // Устанавливаем лидера из команды
         task.setWorkman(workman); // Назначаем задачу работнику
-        task.setStatusTasks("Ожидание"); // Устанавливаем статус задачи
+        task.setStatusTasks(TaskStatus.NEW); // Устанавливаем статус задачи
 
         // Сохраняем задачу в базе данных
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        // Создание уведомления
+        Notification notification = new Notification();
+        notification.setUserId(workman.getId()); // Устанавливаем ID работника
+        notification.setMessage("Вам назначена новая задача: " + savedTask.getTitleTasks());
+        notification.setCreatedAt(LocalDateTime.now());
+        notification.setRead(false); // Уведомление новое
+        notificationRepository.save(notification); // Сохраняем уведомление
+
+        return savedTask; // Возвращаем сохраненную задачу
     }
 
     public List<Task> getTasksForComand(Long comandId) {
@@ -69,5 +81,12 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Работник не найден"));
         return taskRepository.findByWorkman(workman); // Получаем задачи для работника
     }
+    public void updateTaskStatus(Long taskId, TaskStatus newStatus) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Задача не найдена"));
+        task.setStatusTasks(newStatus); // Устанавливаем новый статус
+        taskRepository.save(task);
+    }
+
 
 }

@@ -23,6 +23,7 @@
     </li>
   </th:block>
 </ul>
+<a href="/notifications">Уведомления</a>
 
 <h2>Задачи как работодатель</h2>
 <table>
@@ -49,6 +50,7 @@
     <th>Название</th>
     <th>Описание</th>
     <th>Статус</th>
+    <th>Изменить статус</th> <!-- Новый столбец для изменения статуса -->
   </tr>
   </thead>
   <tbody>
@@ -56,6 +58,17 @@
     <td th:text="${task.titleTasks}"></td>
     <td th:text="${task.textTasks}"></td>
     <td th:text="${task.statusTasks}"></td>
+    <td>
+      <form th:action="@{/tasks/{id}/updateStatus(id=${task.id})}" method="post">
+        <select name="newStatus">
+          <option value="NEW" th:selected="${task.statusTasks == 'NEW'}">Новая</option>
+          <option value="IN_PROGRESS" th:selected="${task.statusTasks == 'IN_PROGRESS'}">В процессе</option>
+          <option value="ACCEPTED" th:selected="${task.statusTasks == 'ACCEPTED'}">Принята</option>
+          <option value="COMPLETED" th:selected="${task.statusTasks == 'COMPLETED'}">Завершена</option>
+        </select>
+        <button type="submit">Изменить статус</button>
+      </form>
+    </td>
   </tr>
   </tbody>
 </table>

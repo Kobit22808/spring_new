@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Уведомления</title>
+</head>
+<body>
+<h2>Уведомления</h2>
+<ul>
+  <li th:each="notification : ${notifications}">
+    <span th:text="${notification.message}"></span> <!-- Доступ к полю message объекта Notification -->
+    <span th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}"></span> <!-- Форматирование даты -->
+    <span th:if="${!notification.isRead}">(Непрочитано)</span>
+    <form th:action="@{/notifications/read/{id}(id=${notification.id})}" method="post">
+      <button type="submit" th:if="${!notification.isRead}">Отметить как прочитанное</button>
+    </form>
+  </li>
+</ul>
+</body>
+</html>
