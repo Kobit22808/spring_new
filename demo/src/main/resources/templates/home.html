@@ -24,11 +24,40 @@
   </th:block>
 </ul>
 
-<h2>Ваши задачи</h2>
-<ul>
-  <th:block th:each="task : ${userTasks}">
-    <li th:text="${task.title}">Задача</li>
-  </th:block>
-</ul>
+<h2>Задачи как работодатель</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Название</th>
+    <th>Описание</th>
+    <th>Статус</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${employerTasks}">
+    <td th:text="${task.titleTasks}"></td>
+    <td th:text="${task.textTasks}"></td>
+    <td th:text="${task.statusTasks}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<h2>Задачи как работник</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Название</th>
+    <th>Описание</th>
+    <th>Статус</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${workmanTasks}">
+    <td th:text="${task.titleTasks}"></td>
+    <td th:text="${task.textTasks}"></td>
+    <td th:text="${task.statusTasks}"></td>
+  </tr>
+  </tbody>
+</table>
 </body>
 </html>

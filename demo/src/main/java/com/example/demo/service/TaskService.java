@@ -64,4 +64,10 @@ public class TaskService {
     public void addTaskToComand(Long comandId, String taskTitle) {
         // Логика добавления задачи в команду
     }
+    public List<Task> getTasksForWorkman(Long userId) {
+        User workman = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Работник не найден"));
+        return taskRepository.findByWorkman(workman); // Получаем задачи для работника
+    }
+
 }

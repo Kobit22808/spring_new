@@ -38,6 +38,8 @@ public class HomeController {
             List<Task> workmanTasks = taskService.getTasksByWorkman(currentUser ); // Задачи, где текущий пользователь - работник
             model.addAttribute("employerTasks", employerTasks);
             model.addAttribute("workmanTasks", workmanTasks);
+            System.out.println("Employer Tasks: " + employerTasks);
+            System.out.println("Workman Tasks: " + workmanTasks);
         } else
             return "redirect:/login";
 

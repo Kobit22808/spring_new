@@ -12,10 +12,10 @@
         <span th:text="${user.username}"></span>
     </li>
 </ul>
-<h3>Задачи команды:</h3>
-<ul th:each="task : ${tasks}">
-    <li th:text="${task.title}">Название задачи</li>
-</ul>
+<!--<h3>Задачи команды:</h3>-->
+<!--<ul th:each="task : ${tasks}">-->
+<!--    <li th:text="${task.title}">Название задачи</li>-->
+<!--</ul>-->
 <form th:action="@{/comands/{id}/addMember(id=${comand.id})}" method="post">
     <label for="memberUserId">ID пользователя:</label>
     <input type="number" id="memberUserId" name="userId" required>

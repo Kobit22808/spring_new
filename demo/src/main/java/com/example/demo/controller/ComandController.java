@@ -39,6 +39,7 @@ public class ComandController {
         model.addAttribute("comand", comand);
         model.addAttribute("users", comandService.getUsersInComand(id)); // Получаем только участников команды
         model.addAttribute("tasks", taskService.getTasks());
+
         return "comand"; // Возвращает имя шаблона для страницы команды
     }
 
