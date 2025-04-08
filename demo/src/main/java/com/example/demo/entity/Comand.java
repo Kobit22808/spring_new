@@ -2,13 +2,16 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "comands")
 public class Comand {
@@ -40,11 +43,4 @@ public class Comand {
 
     // Другие поля, геттеры и сеттеры...
 
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
-    }
 }
