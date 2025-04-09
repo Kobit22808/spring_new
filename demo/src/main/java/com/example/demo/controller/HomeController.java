@@ -29,6 +29,8 @@ public class HomeController {
         User currentUser  = userService.getCurrentUser (); // Получаем текущего пользователя
 
         if (currentUser  != null) {
+            model.addAttribute("currentUser ", currentUser );
+            model.addAttribute("user_id", currentUser .getId()); // Добавляем текущего пользователя в модель
             model.addAttribute("username", currentUser .getUsername());
             List<Comand> userComands = userService.getUserComands(currentUser ); // Получаем команды пользователя
             model.addAttribute("userComands", userComands);

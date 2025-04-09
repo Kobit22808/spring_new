@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Редактирование задачи</title>
+</head>
+<body>
+<h1>Редактирование задачи</h1>
+<form th:action="@{/tasks/{id}/edit(id=${task.id})}" method="post">
+  <label for="title">Название:</label>
+  <input type="text" id="title" name="title" th:value="${task.titleTasks}" required />
+
+  <label for="text">Описание:</label>
+  <textarea id="text" name="text" required th:text="${task.textTasks}"></textarea> <!-- Исправлено здесь -->
+
+  <input type="hidden" name="userId" th:value="${user_id}" /> <!-- Передаем ID текущего пользователя -->
+
+  <button type="submit">Сохранить изменения</button>
+</form>
+<a href="/tasks">Назад к задачам</a>
+</body>
+</html>
