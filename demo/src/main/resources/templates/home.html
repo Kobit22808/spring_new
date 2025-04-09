@@ -32,6 +32,7 @@
     <th>Название</th>
     <th>Описание</th>
     <th>Статус</th>
+    <th>Действия</th> <!-- Новый столбец для действий -->
   </tr>
   </thead>
   <tbody>
@@ -39,6 +40,13 @@
     <td th:text="${task.titleTasks}"></td>
     <td th:text="${task.textTasks}"></td>
     <td th:text="${task.statusTasks}"></td>
+    <td>
+      <a th:href="@{/tasks/{id}/edit(id=${task.id})}">Редактировать</a>
+      <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post" style="display:inline;">
+        <input type="hidden" name="userId" th:value="${user_id}"> <!-- ID текущего пользователя -->
+        <button type="submit">Удалить</button>
+      </form>
+    </td>
   </tr>
   </tbody>
 </table>
@@ -50,7 +58,7 @@
     <th>Название</th>
     <th>Описание</th>
     <th>Статус</th>
-    <th>Изменить статус</th> <!-- Новый столбец для изменения статуса -->
+    <th>Изменить статус</th>
   </tr>
   </thead>
   <tbody>

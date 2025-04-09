@@ -2,8 +2,11 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "user_comand_links")
 public class UserComandLink {
@@ -18,4 +21,6 @@ public class UserComandLink {
     @ManyToOne
     @JoinColumn(name = "comand_id")
     private Comand comand;
+
+
 }

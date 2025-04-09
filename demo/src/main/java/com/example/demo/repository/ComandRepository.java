@@ -15,4 +15,5 @@ public interface ComandRepository extends JpaRepository<Comand, Long> {
 
     @Query("SELECT c FROM Comand c JOIN UserComandLink ucl ON c.id = ucl.comand.id WHERE ucl.user.id = :userId")
     List<Comand> findByMembers(@Param("userId") Long userId);
+
 }
