@@ -31,7 +31,7 @@ public class UserController {
         return "createUser "; // Имя HTML-файла без расширения
     }
 
-    @PostMapping("/api/users")
+    @PostMapping("/create/users")
     public String createUser (@RequestParam String username,
                               @RequestParam String firstName,
                               @RequestParam String lastName,

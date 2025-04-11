@@ -116,5 +116,11 @@ public class UserService {
         return userRepository.findAll(); // Возвращает всех пользователей
     }
 
-
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User  not found with id: " + id));
+    }
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password); // Хеширование пароля
+    }
 }

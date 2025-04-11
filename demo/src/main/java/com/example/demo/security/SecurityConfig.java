@@ -2,6 +2,8 @@ package com.example.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,17 +24,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Отключение CSRF (для упрощения)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/error").permitAll() // Разрешить доступ к главной, входу и регистрации
+                        .requestMatchers("/", "/login", "/register", "/error", "/api/users", "/api/login", "/api/register").permitAll() // Разрешить доступ к главной, входу и регистрации
 //                        .requestMatchers("/comands","/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
                         .requestMatchers("/comands/**").authenticated()
                         .requestMatchers("/tasts/**").authenticated()
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Указать страницу входа
-                        .defaultSuccessUrl("/") // Перенаправление после успешного входа
-                        .failureUrl("/login?error=true") // Перенаправление при ошибке входа
-                        .permitAll() // Разрешить доступ к странице входа
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login") // Укажите URL для обработки входа
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error=true")
+                        .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login") // Перенаправление после выхода
@@ -40,6 +43,11 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }

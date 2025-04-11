@@ -15,4 +15,6 @@ public class AuthController {
         }
         return "login"; // имя файла login.html
     }
+
+
 }
