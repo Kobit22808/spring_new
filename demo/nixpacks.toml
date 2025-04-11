@@ -1,0 +1,8 @@
+[build]
+builder = "maven"
+
+[env]
+JAVA_HOME = "/usr/lib/jvm/java-21-openjdk"
+
+[[run]]
+command = "java -jar target/demo-0.0.1-SNAPSHOT.jar"
