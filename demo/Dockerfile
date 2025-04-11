@@ -30,3 +30,9 @@ COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar demo-0.0.1-SNAPSHOT.jar
 
 # Указываем, как запускать приложение
 ENTRYPOINT ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
+# build phase
+COPY . /app/.
+
+RUN --mount=type=cache,id=s/4a811ef9-94ae-4b09-80f2-6b651b0ae09f-m2/repository,target=/app/.m2/repository \
+    mvn dependency:tree && \
+    mvn -DoutputFile=target/mvn-dependency-list.log -DskipTests clean dependency:list install
