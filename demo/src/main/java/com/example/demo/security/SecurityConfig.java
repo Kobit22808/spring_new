@@ -15,11 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Отключение CSRF (для упрощения)
@@ -28,6 +23,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/comands","/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
                         .requestMatchers("/comands/**").authenticated()
                         .requestMatchers("/tasts/**").authenticated()
+                                .requestMatchers("/posts/create").authenticated()
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
@@ -48,6 +44,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Используем BCrypt для хеширования
     }
 
 }

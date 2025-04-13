@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Создание поста</title>
+</head>
+<body>
+<h1>Создать пост для команды</h1>
+<form action="/posts/create" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="comandId" th:value="${comand.id}"/> <!-- Передаем ID команды -->
+  <label for="title">Название:</label>
+  <input type="text" id="title" name="title" required/>
+
+  <label for="content">Содержание:</label>
+  <textarea id="content" name="content" required></textarea>
+
+  <input type="file" name="image" required/> <!-- Поле для загрузки одного изображения -->
+
+  <button type="submit">Создать пост</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Посты команды</title>
+</head>
+<body>
+<h1>Посты команды: <span th:text="${comand.title}"></span></h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Название</th>
+    <th>Содержимое</th>
+    <th>Дата создания</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="post : ${posts}">
+    <td th:text="${post.title}"></td>
+    <td th:text="${post.content}"></td>
+    <td th:text="${post.createdAt}"></td>
+    <td>
+      <div th:each="img : ${post.formattedImages}">
+        <img th:src="${img}" th:alt="${post.title}" style="width: 100px; height: 100px; object-fit: cover;" />
+      </div>
+    </td>
+    <td th:if="${isLeader}">
+      <a th:href="@{/posts/{id}/edit(id=${post.id})}">Редактировать</a>
+      <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline;">
+        <button type="submit">Удалить</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/comands">Назад к командам</a>
+</body>
+</html>

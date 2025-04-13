@@ -36,8 +36,11 @@ public class ComandController {
     @GetMapping("/{id}")
     public String getComand(@PathVariable Long id, Model model) {
         Comand comand = comandService.getComand(id);
+        if (comand == null) {
+            return "404"; // Возвращаем страницу 404, если команда не найдена
+        }
         model.addAttribute("comand", comand);
-        model.addAttribute("users", comandService.getUsersInComand(id)); // Получаем только участников команды
+        model.addAttribute("users", comandService.getUsersInComand(id));
         model.addAttribute("tasks", taskService.getTasks());
 
         return "comand"; // Возвращает имя шаблона для страницы команды

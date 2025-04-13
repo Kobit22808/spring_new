@@ -16,6 +16,8 @@
 <!--<ul th:each="task : ${tasks}">-->
 <!--    <li th:text="${task.title}">Название задачи</li>-->
 <!--</ul>-->
+<a th:href="@{/posts/create(comandId=${comand.id})}">Создать пост</a>
+<a th:href="@{/posts/comands/{id}/posts(id=${comand.id})}">Посты</a>
 <form th:action="@{/comands/{id}/addMember(id=${comand.id})}" method="post">
     <label for="memberUserId">ID пользователя:</label>
     <input type="number" id="memberUserId" name="userId" required>

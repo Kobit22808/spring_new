@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Все посты</title>
+</head>
+<body>
+<h1>Все посты</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Заголовок</th>
+    <th>Содержание</th>
+    <th>Дата создания</th>
+    <th>Изображение</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="post : ${posts}">
+    <td th:text="${post.title}"></td>
+    <td th:text="${post.content}"></td>
+    <td th:text="${post.formattedCreatedAt}"></td>
+    <td>
+      <div th:each="img : ${post.formattedImages}">
+        <img th:src="${img}" th:alt="${post.title}" style="width: 100px; height: 100px; object-fit: cover;" />
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/">На главную</a> <!-- Ссылка на главную страницу -->
+</body>
+</html>

@@ -3,10 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.*;
 import com.example.demo.models.LoginRequest;
 import com.example.demo.models.LoginResponse;
-import com.example.demo.service.AuthService;
-import com.example.demo.service.ComandService;
-import com.example.demo.service.TaskService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +28,8 @@ public class ApiController {
 
     @Autowired
     private AuthService authService;
+    @Autowired
+    private PostService postService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser (@RequestBody User user) {
@@ -43,7 +42,7 @@ public class ApiController {
         }
 
         // Создание нового пользователя
-        user.setPassword(userService.encodePassword(user.getPassword())); // Хеширование пароля
+        //user.setPassword(userService.encodePassword(user.getPassword())); // Хеширование пароля
         user.setCreatedAt(LocalDate.now());
 
         // Получение или создание роли USER
@@ -64,8 +63,8 @@ public class ApiController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
-            String userId = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
-            LoginResponse response = new LoginResponse(loginRequest.getUsername(), userId);
+            Long userId = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            LoginResponse response = new LoginResponse(loginRequest.getUsername(), userId); // Теперь типы совпадают
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(new LoginResponse(e.getMessage(), null));
@@ -126,6 +125,30 @@ public class ApiController {
         Comand comand = comandService.getComand(id);
         return ResponseEntity.ok(comand);
     }
+
+
+
+    /// //////
+//    @GetMapping("/comands/{id}")
+//    public Comand getComandById(@PathVariable Long id) {
+//        return comandService.getComand(id);
+//    }
+
+//    @PostMapping
+//    public Comand createComand(@RequestBody Comand comand) {
+//        return comandService.createComand(comand.getTitle(), comand.getDescription(), comand.getLeader().getId());
+//    }
+
+//    @GetMapping("/{comandId}/posts")
+//    public List<Post> getPostsByComand(@PathVariable Long comandId) {
+//        Comand comand = comandService.getComand(comandId);
+//        return postService.getPostsByComand(comand);
+//    }
+
+//    @PostMapping("/comands/{comandId}/posts")
+//    public Post createPost(@PathVariable Long comandId, @RequestBody Post post) {
+//        return postService.createPost(comandId, post);
+//    }
 
 //    @PostMapping("/comands")
 //    public ResponseEntity<Comand> createComand(@RequestBody Comand comand) {

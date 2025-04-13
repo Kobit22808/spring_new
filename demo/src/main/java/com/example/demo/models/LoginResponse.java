@@ -2,9 +2,9 @@ package com.example.demo.models;
 
 public class LoginResponse {
     private String username;
-    private String userId;
+    private Long userId; // Измените на Long
 
-    public LoginResponse(String username, String userId) {
+    public LoginResponse(String username, Long userId) {
         this.username = username;
         this.userId = userId;
     }
@@ -13,7 +13,7 @@ public class LoginResponse {
         return username;
     }
 
-    public String getUserId() {
+    public Long getUserId() { // Измените возвращаемый тип на Long
         return userId;
     }
 }

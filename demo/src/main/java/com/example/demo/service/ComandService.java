@@ -70,4 +70,23 @@ public class ComandService {
     public List<User> getUsersInComand(Long comandId) {
         return comandRepository.findUsersByComandId(comandId);
     }
+    public void updateComand(Long id, Comand updatedComand) {
+        Comand comand = comandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Команда не найдена"));
+        comand.setTitle(updatedComand.getTitle());
+        comand.setDescription(updatedComand.getDescription());
+        // Обновите другие поля, если необходимо
+        comandRepository.save(comand);
+    }
+
+    public void deleteComand(Long id) {
+        Comand comand = comandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Команда не найдена"));
+        comandRepository.delete(comand);
+    }
+
+    public Comand getComandById(Long id) {
+        Optional<Comand> comand = comandRepository.findById(id);
+        return comand.orElseThrow(() -> new RuntimeException("Команда не найдена")); // Обработка случая, когда команда не найдена
+    }
 }
