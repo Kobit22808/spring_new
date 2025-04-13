@@ -1,5 +1,7 @@
 [build]
 builder = "maven"
+language = "java"
+java_version = "21"
 
 [env]
 JAVA_HOME = "/usr/lib/jvm/java-21-openjdk"

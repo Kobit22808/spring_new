@@ -22,25 +22,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Отключение CSRF (для упрощения)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/error", "/api/users", "/api/login", "/api/register").permitAll() // Разрешить доступ к главной, входу и регистрации
-//                        .requestMatchers("/comands","/comands/create").hasRole("ADMIN") // Доступ только для ADMIN к странице создания команды
-                        .requestMatchers("/comands/**").authenticated()
-                        .requestMatchers("/tasts/**").authenticated()
-                        .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login") // Укажите URL для обработки входа
-                        .defaultSuccessUrl("/")
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login") // Перенаправление после выхода
-                        .permitAll() // Разрешить доступ к выходу
-                );
+            .csrf(csrf -> csrf.disable()) // Отключаем CSRF
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/login", "/register", "/error", "/api/users", "/api/login", "/api/register").permitAll() // Разрешить доступ к страницам без аутентификации
+                .requestMatchers("/chat/**").authenticated() // Разрешить доступ к чату только для аутентифицированных пользователей
+                .requestMatchers("/comands/**").authenticated() // Доступ для администраторов
+                .requestMatchers("/tasts/**").authenticated() // Доступ для авторизованных пользователей
+                .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login") // Перенаправление после выхода
+                .permitAll() // Разрешить доступ к выходу
+            );
 
         return http.build();
     }
@@ -49,5 +49,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
 }
