@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мессенджер</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #messages {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Мессенджер</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" class="form-control" placeholder="Введите сообщение..." />
+    <button id="sendButton" class="btn btn-primary mt-2">Отправить</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/ws'); // Подключаемся к WebSocket
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+        });
+    }
+
+    function sendMessage() {
+        var messageInput = document.getElementById("messageInput");
+        var message = {
+            text: messageInput.value
+        };
+        stompClient.send("/app/send", {}, JSON.stringify(message)); // Отправляем сообщение
+        messageInput.value = ""; // Очищаем поле ввода
+    }
+
+    function showMessage(message) {
+        var messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML += "<div>" + message.text + "</div>"; // Отображаем сообщение
+    }
+
+    document.getElementById("sendButton").onclick = sendMessage;
+
+    connect(); // Подключаемся при загрузке страницы
+</script>
+</body>
+</html>

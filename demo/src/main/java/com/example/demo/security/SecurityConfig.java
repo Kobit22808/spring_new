@@ -24,7 +24,8 @@ public class SecurityConfig {
                         .requestMatchers("/comands/**").authenticated()
                         .requestMatchers("/tasts/**").authenticated()
                                 .requestMatchers("/posts/create").authenticated()
-                        .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+                                .requestMatchers("/ws/**").permitAll()
+                                .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
