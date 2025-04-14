@@ -1,24 +1,33 @@
 package com.example.demo.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.UserRole;
-import com.example.demo.entity.UserRoleEntity;
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.entity.Role;
+import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
+import com.example.demo.entity.UserRoleEntity;
+import com.example.demo.service.UserService;
+
 @Controller
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -26,57 +35,57 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/createUser ")
+    @GetMapping("/createUser")
     public String showCreateUserForm() {
-        return "createUser "; // Имя HTML-файла без расширения
+        return "createUser"; // Имя HTML-файла без расширения
     }
 
     @PostMapping("/create/users")
-    public String createUser (@RequestParam String username,
-                              @RequestParam String firstName,
-                              @RequestParam String lastName,
-                              @RequestParam String patronymic,
-                              @RequestParam String email,
-                              @RequestParam String password,
-                              @RequestParam String birth,
-                              @RequestParam String roles,
-                              Model model) {
+    public String createUser(@RequestParam String username,
+                             @RequestParam String firstName,
+                             @RequestParam String lastName,
+                             @RequestParam String patronymic,
+                             @RequestParam String email,
+                             @RequestParam String password,
+                             @RequestParam String birth,
+                             @RequestParam String roles,
+                             Model model) {
         try {
             LocalDate birthDate = LocalDate.parse(birth);
             Set<UserRole> roleSet = new HashSet<>();
 
-            // Преобразование строки в перечисление Role
-            Role role = Role.valueOf(roles.toUpperCase()); // Преобразуем строку в значение перечисления
-            UserRoleEntity userRoleEntity = userService.findOrCreateRole(role); // Получаем или создаем роль
+            Role role = Role.valueOf(roles.toUpperCase());
+            UserRoleEntity userRoleEntity = userService.findOrCreateRole(role);
 
-            // Создание нового пользователя
             User user = new User();
             user.setUsername(username);
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setPatronymic(patronymic);
             user.setEmail(email);
-            user.setPassword(passwordEncoder.encode(password)); // Хеширование пароля
+            user.setPassword(passwordEncoder.encode(password));
             user.setBirth(birthDate);
 
-            // Создание объекта UserRole и добавление его в набор ролей
-            UserRole userRole = new UserRole(); // Создаем объект UserRole
-            userRole.setUser (user); // Устанавливаем пользователя
-            userRole.setRole(userRoleEntity); // Устанавливаем роль
-            roleSet.add(userRole); // Добавляем в набор ролей
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(userRoleEntity);
+            roleSet.add(userRole);
 
-            user.setUserRoles(roleSet); // Устанавливаем роли для пользователя
+            user.setUserRoles(roleSet);
 
-            // Добавление нового пользователя
-            userService.addUser (user); // Теперь передаем объект User
-
-            return "redirect:/createUser "; // Перенаправление на страницу после создания
+            userService.addUser(user);
+            logger.info("User created successfully: {}", username);
+            return "redirect:/createUser";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", "Invalid role: " + roles);
-            return "createUser "; // Вернуть на страницу с ошибкой
+            logger.error("Error creating user: Invalid role - {}", roles);
+            return "createUser";
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred while creating the user: " + e.getMessage());
-            return "createUser "; // Вернуть на страницу с ошибкой
+            logger.error("Error creating user: {}", e.getMessage());
+            return "createUser";
         }
     }
+
+    // Other methods remain unchanged...
 }

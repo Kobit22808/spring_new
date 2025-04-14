@@ -1,61 +1,54 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мессенджер</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Chat</title>
     <style>
         #messages {
-            height: 400px;
-            overflow-y: scroll;
             border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: scroll;
             margin-bottom: 10px;
-            padding: 10px;
+        }
+        #messageInput {
+            width: 80%;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1 class="mt-5">Мессенджер</h1>
+    <h1>Чатик</h1>
     <div id="messages"></div>
-    <input type="text" id="messageInput" class="form-control" placeholder="Введите сообщение..." />
-    <button id="sendButton" class="btn btn-primary mt-2">Отправить</button>
-</div>
+    <input type="text" id="messageInput" placeholder="Введите сообщение...">
+    <button id="sendButton">Отправить</button>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script>
-    var stompClient = null;
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
 
-    function connect() {
-        var socket = new SockJS('/ws'); // Подключаемся к WebSocket
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/messages', function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-        });
-    }
+        const socket = new WebSocket('ws://localhost:8080/chat'); // Adjust the URL as needed
 
-    function sendMessage() {
-        var messageInput = document.getElementById("messageInput");
-        var message = {
-            text: messageInput.value
+        socket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${message.senderid}: ${message.content}`;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
         };
-        stompClient.send("/app/send", {}, JSON.stringify(message)); // Отправляем сообщение
-        messageInput.value = ""; // Очищаем поле ввода
-    }
 
-    function showMessage(message) {
-        var messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML += "<div>" + message.text + "</div>"; // Отображаем сообщение
-    }
-
-    document.getElementById("sendButton").onclick = sendMessage;
-
-    connect(); // Подключаемся при загрузке страницы
-</script>
+        sendButton.onclick = function() {
+            const message = {
+                chatId: '1', // Example chat ID
+                senderid: 'user1', // Example sender ID
+                recipientid: 'user2', // Example recipient ID
+                content: messageInput.value,
+                timestamp: new Date().toISOString()
+            };
+            socket.send(JSON.stringify(message));
+            messageInput.value = ''; // Clear input field
+        };
+    </script>
 </body>
 </html>
+</create_file>
