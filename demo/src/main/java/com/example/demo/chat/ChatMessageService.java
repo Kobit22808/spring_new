@@ -1,5 +1,6 @@
 package com.example.demo.chat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +16,15 @@ public class ChatMessageService {
     private final ChatMessageRepository repository;
     private final ChatRoomService chatRoomService;
 
-    public ChatMessage save(ChatMessage chatMessage){
+    public ChatMessage save(ChatMessage chatMessage) {
         var chatId = chatRoomService.getChatRoomId(
-            chatMessage.getSenderId(),
-            chatMessage.getRecipientId(),
-            true // createNewRoomIfNotExists
-        ).orElseThrow(); // You can create your own dedicated exception
+                chatMessage.getSenderId(),
+                chatMessage.getRecipientId(),
+                true // createNewRoomIfNotExists
+        ).orElseThrow(); // Вы можете создать свое собственное исключение
         chatMessage.setChatId(chatId);
-        repository.save(chatMessage);
-        return chatMessage;
+        chatMessage.setTimestamp(LocalDateTime.now().toString()); // Установите текущее время
+        return repository.save(chatMessage);
     }
     
     public List<ChatMessage> findChatMessages(

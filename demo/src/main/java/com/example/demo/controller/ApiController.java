@@ -6,6 +6,7 @@ import com.example.demo.models.LoginResponse;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class ApiController {
     @Autowired
     private PostService postService;
 
+    // регистрация
     @PostMapping("/register")
     public ResponseEntity<String> registerUser (@RequestBody User user) {
         // Проверка существования пользователя
@@ -60,6 +62,7 @@ public class ApiController {
         return ResponseEntity.ok("User  registered successfully");
     }
 
+// вход в аккаунт
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -70,6 +73,21 @@ public class ApiController {
             return ResponseEntity.status(401).body(new LoginResponse(e.getMessage(), null));
         }
     }
+
+    // создание команды
+    @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()") // Проверка, что пользователь аутентифицирован
+    public ResponseEntity<String> createComand(@RequestBody String title, @RequestParam String description, @RequestParam Long leaderId) {
+        comandService.createComand(title, description, leaderId);
+        return ResponseEntity.ok("Comand created"); // Перенаправляем на страницу команд
+    }
+
+
+
+
+
+
+
 
     @GetMapping("/currentUser ")
     public ResponseEntity<User> getCurrentUser () {

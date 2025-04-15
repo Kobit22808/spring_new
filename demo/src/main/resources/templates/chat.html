@@ -17,38 +17,43 @@
     </style>
 </head>
 <body>
-    <h1>Чатик</h1>
-    <div id="messages"></div>
-    <input type="text" id="messageInput" placeholder="Введите сообщение...">
-    <button id="sendButton">Отправить</button>
+<h1>Чатик</h1>
+<div id="messages"></div>
+<input type="text" id="messageInput" placeholder="Введите сообщение...">
+<button id="sendButton">Отправить</button>
 
-    <script>
-        const messagesDiv = document.getElementById('messages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
 
-        const socket = new WebSocket('ws://localhost:8080/chat'); // Adjust the URL as needed
+    const socket = new SockJS('http://localhost:8080/ws'); // Используем SockJS
+    const stompClient = Stomp.over(socket);
 
-        socket.onmessage = function(event) {
-            const message = JSON.parse(event.data);
+    stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/user/queue/messages', function(message) {
+            const msg = JSON.parse(message.body);
             const messageElement = document.createElement('div');
-            messageElement.textContent = `${message.senderid}: ${message.content}`;
+            messageElement.textContent = `${msg.senderid}: ${msg.content}`;
             messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
-        };
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+        });
+    });
 
-        sendButton.onclick = function() {
-            const message = {
-                chatId: '1', // Example chat ID
-                senderid: 'user1', // Example sender ID
-                recipientid: 'user2', // Example recipient ID
-                content: messageInput.value,
-                timestamp: new Date().toISOString()
-            };
-            socket.send(JSON.stringify(message));
-            messageInput.value = ''; // Clear input field
-        };
-    </script>
+    sendButton.onclick = function() {
+    const message = {
+        chatId: '1', // Пример ID чата
+        senderId: 'user1', // Пример ID отправителя
+        recipientId: 'user2', // Пример ID получателя
+        content: messageInput.value,
+        timestamp: new Date().toISOString()
+    };
+    stompClient.send("/app/chat", {}, JSON.stringify(message)); // Отправка сообщения
+    messageInput.value = ''; // Очистка поля ввода
+};
+</script>
 </body>
 </html>
-</create_file>

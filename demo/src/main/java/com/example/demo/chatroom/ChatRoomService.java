@@ -27,21 +27,24 @@ public class ChatRoomService {
             });
     }
 
-    private String createChatId(String senderId, String recipientId){
-        var chatId = String.format("%s_%s", senderId, recipientId); // ali_alibou
+    private String createChatId(String senderId, String recipientId) {
+        var chatId = String.format("%s_%s", senderId, recipientId); // Пример ID чата
 
         ChatRoom senderRecipient = ChatRoom.builder()
-            .chatId(chatId)
-            .senderId(senderId)
-            .recipientId(recipientId)
-            .build();
+                .chatId(chatId)
+                .senderId(senderId)
+                .recipientId(recipientId)
+                .build();
+
         ChatRoom recipientSender = ChatRoom.builder()
-            .chatId(chatId)
-            .senderId(recipientId)
-            .recipientId(senderId)
-            .build();
+                .chatId(chatId)
+                .senderId(recipientId)
+                .recipientId(senderId)
+                .build();
+
         chatRoomRepository.save(senderRecipient);
         chatRoomRepository.save(recipientSender);
+
         return chatId;
     }
 }

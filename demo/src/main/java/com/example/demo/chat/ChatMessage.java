@@ -3,6 +3,8 @@ package com.example.demo.chat;
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +20,13 @@ import lombok.Setter;
 @Entity
 public class ChatMessage {
     @Id
-    private String id;
-    private String chatId; // Field name remains as is
-    private String senderid;
-    private String recipientid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Авто-генерация ID
+    private Long id; // Тип Long для идентификатора
+    private String chatId;
+    private String senderId;
+    private String recipientId;
     private String content;
-    private Date timestamp;
+    private String timestamp;
 
     // Adding the setChatId method
     public void setChatId(String chatId) {
@@ -32,10 +35,10 @@ public class ChatMessage {
 
     // Adding getter methods
     public String getSenderId() {
-        return senderid;
+        return senderId;
     }
 
     public String getRecipientId() {
-        return recipientid;
+        return recipientId;
     }
 }

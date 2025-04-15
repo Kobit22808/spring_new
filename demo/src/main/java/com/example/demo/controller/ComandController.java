@@ -52,7 +52,7 @@ public class ComandController {
         model.addAttribute("users", userRepository.findAll()); // Получаем всех пользователей
         return "addMember"; // Возвращаем имя шаблона
     }
-
+// добавление пользователя в команду
     @PostMapping("/{comandId}/addMember")
     public String addMemberToComand(@PathVariable Long comandId, @RequestParam Long userId) {
         comandService.addMemberToComand(comandId, userId);
@@ -64,6 +64,8 @@ public class ComandController {
         // Логика для создания команды
         return "createComand"; // Возвращает имя шаблона для создания команды
     }
+
+    // создание команды
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()") // Проверка, что пользователь аутентифицирован
     public String createComand(@RequestParam String title, @RequestParam String description, @RequestParam Long leaderId) {
